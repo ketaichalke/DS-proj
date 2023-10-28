@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    double data;
+    struct node *next;
+};
+
+struct node *front[2];  
+struct node *rear[2];   
+
+void enqueue(int queueIndex,float x);  
+void dequeue(int queueIndex);  
+void display(int queueIndex);  
+
+int main() {
+    int queueIndex;
+
+    for (queueIndex = 0; queueIndex < 3; queueIndex++) {
+        front[queueIndex] = NULL;
+        rear[queueIndex] = NULL;
+    }
+
+    int ch,c1,c2;
+    float x;
+
+     do
+    {
+        printf("\n------------------------------------------------------------------------------------------------------------------------------------\n");
+        printf("Enter 1. For booking Ride \n");
+        printf("Enter 2. For cancelling the Ride\n");
+        printf("Enter 3. For Display\n");
+        printf("Enter 4. For exiting \n ");
+        scanf("%d",&ch);
+        switch (ch)
+        {
+        case 1:
+            printf("Enter 1. For Intercity Ride \n");
+            printf("Enter 2. For Intracity Ride : ");
+            scanf("%d",&c1);
+            if(c1==1)
+            {
+                printf("Enter the number of killometers : ");
+                scanf("%f",&x);
+                enqueue(1,x);
+                
+            }
+            else if(c1==2)
+            {
+                printf("Enter the number of killometers : ");
+                scanf("%f",&x);
+                enqueue(2,x);
+                
+            }
+            else
+            {
+                printf("Wrong choice enterd");
+            }
+            break;
+        case 2:
+            printf("Enter 1. For Intercity Ride \n");
+            printf("Enter 2. For Intracity Ride : ");
+            scanf("%d",&c2);
+            if(c2==1)
+            {
+                dequeue(1);
+            }
+            else if(c2==2)
+            {
+                dequeue(2);
+            }
+            else
+            {
+                printf("Wrong choice enterd");
+            }
+            break;
+        case 3:
+            printf("FINAL BILLING : \n");
+            printf("TYPE :                  KILLOMETERS :                       AMOUNT:\n");
+            display(1);
+            display(2);
+            break;
+        case 4:
+            exit(0);
+            break;
+        default:
+            printf("Wrong choice\n");
+        }
+    } while (ch != 4);
+    return 0;
+}
+
+void enqueue(int queueIndex, float x) {
+    
+    struct node *ptr;
+    ptr = (struct node *)malloc(sizeof(struct node));
+    ptr->data = x;
+    ptr->next = NULL;
+
+    if (front[queueIndex] == NULL) {
+        front[queueIndex] = ptr;
+        rear[queueIndex] = ptr;
+    } else {
+        rear[queueIndex]->next = ptr;
+        rear[queueIndex] = ptr;
+    }
+    
+}
+
+void dequeue(int queueIndex) {
+    struct node *ptr;
+
+    if (front[queueIndex] == NULL) {
+        printf("Not a registered Ride in %d\n", queueIndex);
+    } else {
+        ptr = front[queueIndex];
+        front[queueIndex] = front[queueIndex]->next;
+        free(ptr);
+    }
+}
+
+void display(int queueIndex) {
+    float amt=0.00f;
+    struct node *ptr;
+    ptr = front[queueIndex];
+
+    if (ptr == NULL) {
+        if(queueIndex==1)
+        {
+            printf("NO INTER CITY RIDES BOOKED\n");
+        }
+        else
+        {
+            printf("NO INTRA CITY RIDES BOOKED\n");
+        }
+    } 
+    else {
+        
+        while (ptr != NULL) {
+            if(queueIndex==1)
+            {
+                printf("Inter City               %2f                                 %2f\n",ptr->data,(20*ptr->data));
+                amt=amt+(20*ptr->data);
+            }
+            else
+            {
+                printf("Intra City               %2f                                 %2f\n",ptr->data,(10*ptr->data));
+                amt=amt+(10*ptr->data);
+            }
+            ptr = ptr->next;
+        }
+    }
+    printf("TOTAL AMOUNT : %2f\n",amt);
+}
